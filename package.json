@@ -9,8 +9,10 @@
   "author": "Ansel Colby",
   "license": "ISC",
   "dependencies": {
+    "bunyan": "^1.8.12",
     "es6-promisify": "^6.0.0",
     "googleapis": "^24.0.0",
-    "humanparser": "^1.5.0"
+    "humanparser": "^1.5.0",
+    "moment": "^2.22.2"
   }
 }

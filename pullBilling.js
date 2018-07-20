@@ -2,10 +2,15 @@
 
 const google = require('googleapis');
 const async = require('async');
-const authentication = require("./authentication");
 const nameParser = require('humanparser');
 const { promisify } = require('es6-promisify');
 const fs = require('fs');
+const moment = require('moment')
+
+const bunyan = require('bunyan');
+const log = bunyan.createLogger({ name: 'pullBilling'});
+
+const authentication = require("./authentication");
 
 /**
  * This function
@@ -27,7 +32,7 @@ async function getData(auth) {
     let rows = res.sheets[0].data[0].rowData
     return rows;
   } catch (e) {
-    console.log('The API returned an error: ', e);
+    log.error('The API returned an error: ', e);
     return null;
   }
 }
@@ -60,9 +65,9 @@ function parseData(rows) {
         let name = nameParser.parseName(cells[0].formattedValue);
         firstName = name.firstName;
         lastName = name.lastName;
-        setupDate = cells[3].formattedValue;
+        setupDate = moment(cells[3].formattedValue, 'M/DD/YY');
         val = ((Math.ceil(((j - 6) / 3)) - 1) * 3) + 7;
-        month = rows[0].values[val].formattedValue;
+        month = moment(rows[0].values[val].formattedValue, 'MMM YYYY');
         amount = cell.userEnteredValue.numberValue;
         billingData = createElement(billingData, firstName, lastName, setupDate, month, amount);
       }
@@ -116,8 +121,8 @@ function sumBills(data) {
  * This is the main handler of the progam
  * @return
  */
-async function main() {
-  let data
+async function awaitHandler() {
+  // let data
 
   try {
     let auth = await authentication.authenticate();
@@ -125,19 +130,25 @@ async function main() {
 
     // the JSON object that contains all the info
     let billingData = await parseData(rows);
+    if (billingData.billing.length > 0) log.info('JSON assembled');
+    log.info('logging example element from JSON object \n>>>>')
+    console.log(billingData.billing[0]);
+    log.info('<<<<')
+
     // data = JSON.stringify(billingData);
-    // fs.writeFileSync('billing', data);
+    // fs.writeFileSync('billing'.json, data);
 
     // might not be necessary but this consolidates clients and sums their dues
     let sum = sumBills(billingData.billing);
+    if (sumBills.length > 0) log.info('sumBills assembled');
 
     // data = JSON.stringify(sum);
     // fs.writeFileSync('billing.json', data);
   } catch (e) {
-    console.error(e);
+    log.error(e);
   }
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
-main();
+awaitHandler();
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< //
