@@ -1,0 +1,16 @@
+{
+  "name": "billing",
+  "version": "1.0.0",
+  "description": "Pulling clients to be billed",
+  "main": "getRedBoxes.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ansel Colby",
+  "license": "ISC",
+  "dependencies": {
+    "es6-promisify": "^6.0.0",
+    "googleapis": "^24.0.0",
+    "humanparser": "^1.5.0"
+  }
+}
