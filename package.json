@@ -2,7 +2,7 @@
   "name": "billing",
   "version": "1.0.0",
   "description": "Pulling clients to be billed",
-  "main": "getRedBoxes.js",
+  "main": "pullBilling.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,6 +13,7 @@
     "es6-promisify": "^6.0.0",
     "googleapis": "^24.0.0",
     "humanparser": "^1.5.0",
-    "moment": "^2.22.2"
+    "moment": "^2.22.2",
+    "mysql": "^2.16.0"
   }
 }

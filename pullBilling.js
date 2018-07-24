@@ -10,7 +10,7 @@ const moment = require('moment')
 const bunyan = require('bunyan');
 const log = bunyan.createLogger({ name: 'pullBilling'});
 
-const authentication = require("./authentication");
+const authentication = require('./authentication');
 
 /**
  * This function
@@ -22,7 +22,7 @@ async function getData(auth) {
   const asyncGet = promisify(sheets.spreadsheets.get);
   const params = {
     auth: auth,
-    // spreadsheetId: '1bSI0PgV7b3uz7nu3Kwiyda6jgDS1Sa2UeXq0B5ejoVk', // test ID
+    // spreadsheetId: '1e4Iw9LaefbGvOkR3kIEaP4obASj5o8Gtgu3UxMVj4xA', // test ID
     spreadsheetId: '1lbSgA6WaBXEzeoIcffADGfOTOMAM1tsW9CizfckXz8w', // real ID
     ranges: 'Master Billing Sheet!A:BI',
     includeGridData: true
