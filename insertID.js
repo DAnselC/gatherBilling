@@ -5,7 +5,7 @@ const { promisify } = require('es6-promisify');
 const mysql = require('mysql');
 
 const authentication = require('./authentication');
-const pool = require('./database');
+const pool = require('./pool');
 
 const sheets = google.sheets('v4');
 const getSheet = promisify(sheets.spreadsheets.get);
@@ -118,15 +118,26 @@ async function getClientsFromDB() {
 
 async function updateRowRequest(rows, clients) {
   for (var i = 0; i < clients.length; i++) {
+    let matched = false;
     let client = clients[i];
     for (var j = 0; j < rows.length; j++) {
       const cells = rows[j].values;
       if (cells) {
         const cell = cells[1];
-        if ((cell) && (cells[0].userEnteredValue) && (cells[0].userEnteredValue.stringValue === client.name)) {
-          cell.userEnteredValue = { numberValue: client.id };
+        if ((cell) && (cells[0].userEnteredValue)) {
+          let sheetsName = nameParser.parseName(cells[0].userEnteredValue.stringValue);
+          sheetsName = (sheetsName.firstName + ' ' + sheetsName.lastName).toLowerCase();
+          let dbName = nameParser.parseName(client.name);
+          dbName = (dbName.firstName + ' ' + dbName.lastName).toLowerCase();
+          if (sheetsName === dbName) {
+            cell.userEnteredValue = { numberValue: client.id };
+            matched = true;
+          }
         }
       }
+    }
+    if (!matched) {
+      console.log('Client not matched', client);
     }
   }
   return rows;
