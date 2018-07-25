@@ -5,9 +5,11 @@ const { promisify } = require('es6-promisify');
 const mysql = require('mysql');
 
 const authentication = require('./authentication');
-const pool = require('./pool');
+const pool = require('./database');
 
 const sheets = google.sheets('v4');
+const spreadsheetId = '1rEl1zccIysP2q80g2g6XvKCcC7mu3--L9MUL4u1Xvtg';
+const sheetId = 1781934386;
 const getSheet = promisify(sheets.spreadsheets.get);
 const updateSheet = promisify(sheets.spreadsheets.batchUpdate);
 
@@ -39,8 +41,7 @@ async function getRows(auth) {
   console.log('>>>> retrieving row data . . .');
   const params = {
     auth: auth,
-    spreadsheetId: '1e4Iw9LaefbGvOkR3kIEaP4obASj5o8Gtgu3UxMVj4xA', // test ID
-    // spreadsheetId: '1lbSgA6WaBXEzeoIcffADGfOTOMAM1tsW9CizfckXz8w', // real ID
+    spreadsheetId: spreadsheetId,
     ranges: 'Master Billing Sheet!A5:B',
     includeGridData: true
   }
@@ -68,12 +69,12 @@ async function batchUpdate(auth, rows) {
   console.log('>>>> updating rows . . .');
   const request = {
     auth: auth,
-    spreadsheetId: '1rEl1zccIysP2q80g2g6XvKCcC7mu3--L9MUL4u1Xvtg',
+    spreadsheetId: spreadsheetId,
     resource: {
       requests: [{
         updateCells: {
           start: {
-            sheetId: 1781934386,
+            sheetId: sheetId,
             rowIndex: 4,
             columnIndex: 0
           },
